@@ -1379,7 +1379,7 @@ void Scheduler::promotePacesetterDisplay(PromotionParams params,
     ALOGI("Display %s is the pacesetter", to_string(*pacesetterId).c_str());
 
     std::shared_ptr<VsyncSchedule> newVsyncSchedulePtr;
-    if (const auto pacesetterOpt = pacesetterDisplayLocked()) {
+    if (pacesetterOpt) {
         const Display& pacesetter = *pacesetterOpt;
 
         if (params.toggleIdleTimer) {
@@ -1423,11 +1423,6 @@ void Scheduler::promotePacesetterDisplay(PromotionParams params,
         constexpr bool kForce = true;
         const auto pacesetterActiveModePtr = pacesetter.selectorPtr->getActiveMode().modePtr;
         newVsyncSchedulePtr->onDisplayModeChanged(pacesetterActiveModePtr, kForce);
-
-        if (FlagManager::getInstance().pacesetter_selection()) {
-            mSchedulerCallback.enableLayerCachingTexturePool(*pacesetterId, true);
-            onPacesetterDisplaySizeChanged(pacesetterActiveModePtr->getResolution());
-        }
     }
 
     const Display& pacesetter = *pacesetterOpt;

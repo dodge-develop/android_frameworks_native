@@ -238,7 +238,7 @@ void LayerHistory::partitionLayers(nsecs_t now) {
 
     // Iterate over inactive map, moving active layers to the active map.
     for (auto it = mInactiveLayerInfos.begin(); it != mInactiveLayerInfos.end();) {
-        auto& info = it->second.second;
+        auto& [layerUnsafe, info] = it->second;
         if (info->isLayerActive(threshold)) {
             mActiveLayerInfos.try_emplace(it->first, it->second.first, std::move(info));
             // No need to advance the iterator as that now points to the next element.
@@ -254,7 +254,7 @@ void LayerHistory::partitionLayers(nsecs_t now) {
 
     // Iterate over active map, moving inactive layers to the inactive map.
     for (auto it = mActiveLayerInfos.begin(); it != mActiveLayerInfos.end();) {
-        auto& info = it->second.second;
+        auto& [layerUnsafe, info] = it->second;
         if (info->isLayerActive(threshold)) {
             // Set layer vote if set
             const auto frameRate = info->getSetFrameRateVote();
